@@ -8,8 +8,6 @@ INITIAL_MARKER = ' '
 PLAYER_MARKER = 'X'
 COMPUTER_MARKER = 'O'
 
-WHO_GOES_FIRST = 'choose'
-
 def prompt(msg)
   puts "=> #{msg}"
 end
@@ -131,7 +129,7 @@ def two_marked_squares?(brd, marker)
 end
 
 def place_piece!(brd, current)
-  if current == 'player'
+  if current.start_with?('p')
     player_places_piece!(brd)
   else
     computer_places_piece!(brd)
@@ -139,34 +137,59 @@ def place_piece!(brd, current)
 end
 
 def alternate_player(current)
-  if current == 'player'
+  if current.start_with?('p')
     'computer'
   else
     'player'
   end
 end
 
+def get_first_player(who_goes_first)
+  if who_goes_first == 'choose'
+    choice = ''
+    loop do
+      prompt "Who do you want to go first? (player or computer)"
+      choice = gets.chomp
+      break if choice.downcase.start_with?('p') || choice.downcase.start_with?('c')
+      prompt "Sorry, that's not a valid choice."
+    end
+    choice
+  elsif who_goes_first== 'player'
+    'player'
+  elsif who_goes_first == 'computer'
+    'computer'
+  end
+end
+
+def update_score(brd, first_score, second_score)
+  if detect_winner(brd) == 'Player'
+    first_score += 1
+  else
+    second_score += 1
+  end
+end
+
+def display_round_winner(brd, first_score, second_score)
+  if someone_won?(brd)
+    prompt "#{detect_winner(brd)} won!"
+  else
+    prompt "It's a tie!"
+  end
+  display_score(first_score, second_score)
+end
+
 player_score = 0
 computer_score = 0
 current_player = ''
+who_goes_first = 'choose'
 
-if WHO_GOES_FIRST == 'choose'
-  choice = ''
-  loop do
-    prompt "Who do you want to go first? (player or computer)"
-    choice = gets.chomp
-    break if choice.downcase == 'player' || choice.downcase == 'computer'
-    prompt "Sorry, that's not a valid choice."
-  end
-elsif WHO_GOES_FIRST == 'player'
-  choice = 'player'
-elsif WHO_GOES_FIRST == 'computer'
-  choice = 'computer'
-end
+prompt "It's a race to 5!"
+
+starts_first = get_first_player(who_goes_first)
 
 loop do
   board = initialize_board
-  current_player = choice
+  current_player = starts_first
 
   loop do
     display_board(board)
@@ -177,17 +200,19 @@ loop do
 
   display_board(board)
 
-  if someone_won?(board)
-    if detect_winner(board) == 'Player'
-      player_score += 1
-    else
-      computer_score += 1
-    end
-    prompt "#{detect_winner(board)} won!"
-  else
-    prompt "It's a tie!"
-  end
-  display_score(player_score, computer_score)
+  # if someone_won?(board)
+  #   if detect_winner(board) == 'Player'
+  #     player_score += 1
+  #   else
+  #     computer_score += 1
+  #   end
+  #   prompt "#{detect_winner(board)} won!"
+  # else
+  #   prompt "It's a tie!"
+  # end
+  update_score(board, player_score, computer_score)
+  display_round_winner(board, player_score, computer_score)
+  # display_score(player_score, computer_score)
 
   if player_score == 5
     prompt "Player has won the game!"
@@ -199,7 +224,7 @@ loop do
     computer_score = 0
   end
 
-  prompt "Play again? (y or n)"
+  prompt "Play again? (y to continue or other keys to stop)"
   answer = gets.chomp
   break unless answer.downcase.start_with?('y')
 end
