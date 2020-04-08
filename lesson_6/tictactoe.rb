@@ -112,8 +112,8 @@ def joinor(array, punctuation=', ', conjunction='or')
   end
 end
 
-def display_score(player_score, computer_score)
-  prompt "Player score: #{player_score} | Computer score: #{computer_score}"
+def display_score(score)
+  prompt "Player score: #{score[:player_score]} | Computer score: #{score[:computer_score]}"
 end
 
 def two_marked_squares?(brd, marker)
@@ -161,25 +161,25 @@ def get_first_player(who_goes_first)
   end
 end
 
-def update_score(brd, first_score, second_score)
+def update_score(brd, score)
   if detect_winner(brd) == 'Player'
-    first_score += 1
+    score[:player_score] += 1
   else
-    second_score += 1
+    score[:computer_score] += 1
   end
 end
 
-def display_round_winner(brd, first_score, second_score)
+def display_round_winner(brd, score)
   if someone_won?(brd)
     prompt "#{detect_winner(brd)} won!"
   else
     prompt "It's a tie!"
   end
-  display_score(first_score, second_score)
+  display_score(score)
 end
 
-player_score = 0
-computer_score = 0
+
+score = { player_score: 0, computer_score: 0 }
 current_player = ''
 who_goes_first = 'choose'
 
@@ -210,18 +210,18 @@ loop do
   # else
   #   prompt "It's a tie!"
   # end
-  update_score(board, player_score, computer_score)
-  display_round_winner(board, player_score, computer_score)
+  update_score(board, score)
+  display_round_winner(board, score)
   # display_score(player_score, computer_score)
 
-  if player_score == 5
+  if score[:player_score] == 5
     prompt "Player has won the game!"
-    player_score = 0
-    computer_score = 0
-  elsif computer_score == 5
+    score[:player_score] = 0
+    score[:computer_score]= 0
+  elsif score[:computer_score] == 5
     prompt "Computer has won the game!"
-    player_score = 0
-    computer_score = 0
+    score[:player_score] = 0
+    score[:computer_score] = 0
   end
 
   prompt "Play again? (y to continue or other keys to stop)"
