@@ -178,6 +178,23 @@ def display_round_winner(brd, score)
   display_score(score)
 end
 
+def match_over?(score)
+  score[:player_score] == 5 || score[:computer_score] == 5
+end
+
+def display_match_winner(score)
+  if score[:player_score] == 5
+    prompt "Player has won the game!"
+  else
+    prompt "Computer has won the game!"
+  end
+end
+
+def reset_score(score)
+  score[:player_score] = 0
+  score[:computer_score]= 0
+end
+
 
 score = { player_score: 0, computer_score: 0 }
 current_player = ''
@@ -200,28 +217,12 @@ loop do
 
   display_board(board)
 
-  # if someone_won?(board)
-  #   if detect_winner(board) == 'Player'
-  #     player_score += 1
-  #   else
-  #     computer_score += 1
-  #   end
-  #   prompt "#{detect_winner(board)} won!"
-  # else
-  #   prompt "It's a tie!"
-  # end
   update_score(board, score)
   display_round_winner(board, score)
-  # display_score(player_score, computer_score)
 
-  if score[:player_score] == 5
-    prompt "Player has won the game!"
-    score[:player_score] = 0
-    score[:computer_score]= 0
-  elsif score[:computer_score] == 5
-    prompt "Computer has won the game!"
-    score[:player_score] = 0
-    score[:computer_score] = 0
+  if match_over?(score)
+    display_match_winner(score)
+    reset_score(score)
   end
 
   prompt "Play again? (y to continue or other keys to stop)"
