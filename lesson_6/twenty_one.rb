@@ -12,12 +12,10 @@ def total(hand)
   hand.each do |card|
     if card[1] == card[1].to_i.to_s
       total += card[1].to_i
+    elsif card[1] == 'A'
+      total <= 10 ? total += 11 : total += 1
     else
-      if card[1] == 'A'
-        total <= 10 ? total += 11 : total += 1
-      else
-        total += 10
-      end
+      total += 10
     end
   end
   total
@@ -33,12 +31,10 @@ def initialize_deck
   deck
 end
 
-# Method to deal a card
 def deal_card(deck, hand)
   hand << deck.delete(deck.sample)
 end
 
-# Methods to display cards
 def display_dealer_hand_minus_one(hand)
   prompt "Dealer's hand: #{hand[1..-1]}"
 end
@@ -56,7 +52,8 @@ def busted?(hand)
 end
 
 def display_total(player_hand, dealer_hand)
-  prompt("Player total: #{total(player_hand)} | Dealer total: #{total(dealer_hand)}")
+  prompt("Player total: #{total(player_hand)} | " \
+         "Dealer total: #{total(dealer_hand)}")
 end
 
 def display_result(player_hand, dealer_hand)
@@ -104,8 +101,7 @@ loop do
     loop do
       prompt "Hit or stay?"
       answer = gets.chomp
-      break if answer.downcase.start_with?('h') ||
-               answer.downcase.start_with?('s')
+      break if answer.downcase.start_with?('h', 's')
       prompt "That's not a valid answer."
     end
     deal_card(deck, hands[:player_hand]) if answer.start_with?('h')
