@@ -11,7 +11,7 @@ def prompt(msg)
 end
 
 def total(hand)
-  values = hand.map { |card| card[1]}
+  values = hand.map { |card| card[1] }
   total = 0
 
   values.each do |value|
@@ -24,7 +24,7 @@ def total(hand)
     end
   end
 
-  values.select { |value| value == 'A'}.count.times do
+  values.select { |value| value == 'A' }.count.times do
     total -= 10 if total > SCORE_LIMIT
   end
 
@@ -154,10 +154,6 @@ end
 def display_score(score)
   prompt("Player score: #{score[:player_score]} | " \
          "Dealer score: #{score[:dealer_score]}")
-end
-
-def match_over?(score)
-  score[:player_score] == 5 || score[:dealer_score] == 5
 end
 
 def reset_score(score)
